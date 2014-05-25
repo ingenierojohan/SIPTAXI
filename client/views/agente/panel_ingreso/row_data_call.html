@@ -1,0 +1,68 @@
+
+<!-- *************************  TEMPLATE FILA ************************* -->
+<template name = "rowDataCall">
+
+{{#if isNewCustomer}}
+	{{> templateNewCustomer stateCalls}}
+{{else}}
+	{{> templateCustomer stateCalls}}
+{{/if}}
+
+</template>
+<!-- ##################################################################################### -->
+
+<!-- *************************  TEMPLATE PARA CLIENTES NUEVOS ************************* -->
+<template name = 'templateNewCustomer'>
+	<tr class ='error'>
+		<td class = "state"><span class = {{stateCall.state}}><i class={{stateCall.icon}}></i>{{stateCall.desc}}</span></td>
+		<td class="state"> <a href="#" id="lastCall-{{siptaxiCallId}}" class ="lastCall"><span class ="badge badge-important"> {{siptaxiCallCount}}</span></a></td>
+		<td><span class ="badge badge-important">0</span></td>
+		<td><span class ="phone label label-important">{{siptaxiCallPhone}}</span></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td><span class ="badge badge-default">{{siptaxiCallCod}}</span></td>
+		<td>LANZAR</td>
+	</tr>
+</template>
+
+
+
+
+<!-- *************************  TEMPlATE CLIENTES VIEJOS ************************* -->
+<template name = 'templateCustomer'>
+
+	<tr class ={{rowColor}}>
+		<!-- info CALL STATES -->
+		<td class="state"><span class={{stateCall.state}}><i class={{stateCall.icon}}></i>{{stateCall.desc}}</span></td>
+
+		<!-- Info Last Call -->
+		<td class="state"> <a href="#" id="lastCall-{{siptaxiCallId}}" class ="lastCall"><span class ="badge badge-{{rowColor}}"> {{siptaxiCallCount}}</span></a></td>
+
+		<!-- Info Last Services -->
+		<td class = "state"> <a href="#" id="lastServices-{{siptaxiCallId}}" class="lastServices"><span class ="badge badge-{{rowColor}}">{{serviceCount}}</span></a></td>
+		
+		<!-- Info Telefono  -->
+		<td class = "td-phone"><span class ="phone label label-{{rowColor}}">{{siptaxiCallPhone}}</span></td>
+
+		<!-- Info Name Customer y Busqueda-->
+		<td><input type="text" class="inputCustomersNames" value="{{customerNames}}"/></td>
+		
+		<!-- Info de la Direccion -->
+		<td><input type="text" class="inputCustomersAddress" value="{{customerAddress}}"/></td>
+
+		<!-- Campo de Referencia y Busqueda-->
+		<td><input type="text" class="inputCustomersAddressReferences" value="{{customerAddressReference}}"/></td>
+		
+		<!-- Field Comentarios del Cliente -->
+		<td><input type="text" class="inputCustomersComments" value="{{customerComments}}"/></td>
+
+		<!-- Field Codigo Telefonico -->
+		<td class = "state"><span class ="badge badge-default">{{siptaxiCallCod}}</span></td>
+		
+		<td><button class="btn btn-mini btn-inverse" type="button">LANZAR</button></td>
+	</tr>
+
+</template>
+<!-- ##################################################################################### -->

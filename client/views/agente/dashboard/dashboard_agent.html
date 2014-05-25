@@ -1,0 +1,30 @@
+<template name ="dashboardAgent">
+	<div id="dashboard-css">		<!-- Div General de Dashboard -->
+		<!-- We add the sidebar-full class to the wrapper
+		This is necessary for padding on left the navbar and
+		the bady content -->
+		<div class="wraper">
+			{{> navbarAgent}}
+			<div id="main">
+				<div class="container-fluid">
+					<div class="row-fluid">
+						<div class="span12">
+							{{> panelIngreso}}
+						</div>
+					</div>
+				</div>
+
+				<div class="container-fluid">
+					<div class="row-fluid">
+						<div class="span12">
+							{{> panelDespacho}}
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+</template>

@@ -1,0 +1,92 @@
+/*body {
+	height: 100%;
+	padding: 0;
+}*/
+
+/*a {
+	text-decoration: none !important;
+}*/
+
+#dashboard-css .wraper #main{
+	margin-top: 40px;
+}
+
+#dashboard-css #main {
+	margin-left: 0;
+}
+
+#dashboard-css .social-navbar {
+	left: 0;
+}
+
+.social-box .body {
+	padding: 0;
+}
+
+.social-box .body .panel-ingreso{
+	height: 300px;
+  overflow-y: auto;
+}
+.social-box header{
+	padding: 0;
+}
+
+.social-box .body .panel-despacho{
+	height:100%;
+  overflow-y: auto;
+}
+/* Css PAra las Tables de Panel Ingreso*/
+.table th {
+	font-size: 0.8em;
+	text-align: center;
+	padding: 0;
+}
+.table td {
+	font-size: 0.9em;
+	text-align: center;
+	padding: 0.3em 0.3em;
+}
+.table td .phone {
+	font-size: 1.2em;
+	letter-spacing: 1px;
+	vertical-align: middle;
+	padding: 0.3em 0.3em;
+}
+
+.table td .state {
+/*	width: 10px;*/
+/*	padding: 0 0.3em;
+	margin: 0 0.3em;*/
+}
+
+.table td .inputCustomersNames{
+	font-size: 1.2em;
+	padding: 0 0.3em;
+	margin : 0;
+	font-weight:bold; 
+/*	width: 180px;*/
+}
+
+.table td .inputCustomersAddress{
+	font-size: 1.2em;
+	padding: 0 0.3em;
+	margin : 0;
+	font-weight:bold; 
+/*	width: 180px;*/
+}
+
+.table td .inputCustomersAddressReferences {
+	font-size: 1.2em;
+	padding: 0 0.3em;
+	margin : 0;
+	font-weight:bold; 
+/*	width: 180px;*/
+}
+
+.table td .inputCustomersComments {
+	font-size: 0.9em;
+	padding: 0 0.3em;
+	margin : 0;
+/*a*/
+/*	width: 180px;*/
+}

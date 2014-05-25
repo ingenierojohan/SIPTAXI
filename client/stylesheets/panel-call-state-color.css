@@ -1,0 +1,59 @@
+@-webkit-keyframes color_change {
+	from { background-color: blue; }
+	to { background-color: red; }
+}
+@-moz-keyframes color_change {
+	from { background-color: blue; }
+	to { background-color: red; }
+}
+@-ms-keyframes color_change {
+	from { background-color: blue; }
+	to { background-color: red; }
+}
+@-o-keyframes color_change {
+	from { background-color: blue; }
+	to { background-color: red; }
+}
+@keyframes color_change {
+	from { background-color: blue; }
+	to { background-color: red; }
+}
+
+
+.state {
+	width: 50px;
+	padding: 0.3em 0.3em;
+	vertical-align: middle;
+/*	margin: 0.0em;*/
+}
+
+.td-phone{
+	width: 8%;
+}
+
+.state-ring { 
+/*		font-size: 0.9em;
+	text-align: center;
+	padding: 0.3em 0em;*/
+	-webkit-animation: color_change 1s infinite alternate;
+	-moz-animation: color_change 1s infinite alternate;
+	-ms-animation: color_change 1s infinite alternate;
+	-o-animation: color_change 1s infinite alternate;
+	animation: color_change 1s infinite alternate;
+}
+
+.state-answer {
+/*	font-size: 0.9em;
+	text-align: center;
+	padding: 0.3em 0em;*/
+/*	font-size: 0.9em;*/
+	background-color:green;
+}
+
+.state-hangup {
+
+/*	font-size: 0.9em;
+	text-align: center;
+	padding: 0.3em 0em;*/
+	background-color: red;
+}

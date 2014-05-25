@@ -1,0 +1,42 @@
+<template name='panelIngreso'>
+
+	<article class="social-box">
+		<header>
+			<h4><i class="icon-phone-sign icon-large"></i>Panel Ingreso de Llamadas</h4>
+		</header>
+		<div class="body">
+			<div class="panel-ingreso">
+			        <!-- BEGIN TABLE DATA -->
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-bordered">
+          <!-- BEGIN -->
+          <thead>
+            <tr>
+              <th><i class="icon-bell"></i></th>
+              <th><i class="icon-phone-sign"></i></th>
+              <th><i class="icon-dashboard"></i></th>
+              <th>TELEFONO</th>
+              <th>NOMBRE</th>
+              <th>DIRECCION</th>
+              <th>REFERENCIA</th>
+              <th>NOTAS</th>
+              <th>COD</th>
+              <th>acciones</th>
+            </tr>
+          </thead>
+          <!-- END -->
+          <!-- ################### TBODY ###################  -->
+          <!-- BEGIN -->
+          <tbody>
+          {{# each panelCalls}}
+            {{> rowDataCall}}
+          {{/each}}
+          </tbody>
+          <!-- ################### END tbody ###################  -->
+        </table>
+        <!-- END TABLE DATA -->
+			
+			</div>
+		</div>
+	</article>
+
+</template>

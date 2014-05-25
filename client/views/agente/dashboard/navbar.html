@@ -1,0 +1,31 @@
+<template name = "navbarAgent">
+	<header>
+		<nav class="navbar navbar-blue navbar-fixed-top social-navbar">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					
+					<!-- BEGIN BRAND LINK -->
+					<span class="brand label label-success"><i class="icon-user"></i>&nbsp;&nbsp;{{usernameAgent}}</span>
+					<!-- END BRAND LINK -->
+					
+					<!-- NAV IZQUIERDO -->
+					<ul class="nav nav-indicators">
+						<!-- DIVISOR -->
+						<li class="divider-vertical"></li>
+						<!-- HORA -->
+						<li class="brand"><i class="icon-time"></i>&nbsp;&nbsp;<strong>{{horaSistema}}</strong></li>
+						<li class="divider-vertical"></li>
+					</ul>
+
+					<!-- NAV DERECHO -->
+					<ul class="nav nav-indicators pull-right">
+						<!-- LOG OUT -->
+						<li class="divider-vertical"></li>
+							<a href="#" class="btn btn-danger" id="btnSalir"><i class="icon-off"></i>&nbsp;&nbsp;SALIR</a>
+					</ul>
+					<!-- END NAVBAR DERECHO -->
+				</div>
+			</div>
+		</nav>
+	</header>
+</template>

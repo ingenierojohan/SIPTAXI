@@ -1,0 +1,11 @@
+{
+  "packages": {
+    "npm": {},
+    "streams": {},
+    "iron-router": {},
+    "iron-router-progress": {},
+    "spin": {},
+    "moment": {},
+    "fast-render": {}
+  }
+}

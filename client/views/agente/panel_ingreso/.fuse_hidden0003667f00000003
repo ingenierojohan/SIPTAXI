@@ -1,0 +1,54 @@
+
+<template name = "rowDataCall">
+
+{{#if isNewCustomer}}
+	{{> templateNewCustomer stateCalls}}
+{{else}}
+	{{> templateCustomer stateCalls}}
+{{/if}}
+
+</template>
+
+<!-- TEMPLATE PARA CLIENTES NUEVOS -->
+<template name = 'templateNewCustomer'>
+	<tr class ='error'>
+		<td class = "state"><span class = {{stateCall.state}}><i class={{stateCall.icon}}></i>{{stateCall.desc}}</span></td>
+		<td class="state"> <a href="#" id="lastCall-{{siptaxiCallId}}" class ="lastCall"><span class ="badge badge-important"> {{siptaxiCallCount}}</span></a></td>
+		<td><span class ="badge badge-important">0</span></td>
+		<td><span class ="phone label label-important">{{siptaxiCallPhone}}</span></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td><span class ="badge badge-default">{{siptaxiCallCod}}</span></td>
+		<td>LANZAR</td>
+	</tr>
+</template>
+
+<!-- TEMPlATE CLIENTES VIEJOS -->
+<template name = 'templateCustomer'>
+	<tr class ={{rowColor}}>
+		<!-- info CALL STATES -->
+		<td class="state"><span class={{stateCall.state}}><i class={{stateCall.icon}}></i>{{stateCall.desc}}</span></td>
+
+		<!-- Info Last Call -->
+		<td class="state"> <a href="#" id="lastCall-{{siptaxiCallId}}" class ="lastCall"><span class ="badge badge-{{rowColor}}"> {{siptaxiCallCount}}</span></a></td>
+
+		<!-- Info Last Services -->
+		<td class = "state"> <a href="#" id="lastServices-{{siptaxiCallId}}" class="lastServices"><span class ="badge badge-{{rowColor}}">{{serviceCount}}</span></a></td>
+
+
+		<td class = "td-phone"><span class ="phone label label-{{rowColor}}">{{siptaxiCallPhone}}</span></td>
+		<td>{{customerNames}}</td>
+		<td>{{customerAddress}}</td>
+		<td>{{customerAddressReference}}</td>
+		<td>{{customerComments}}</td>
+		<td class = "state"><span class ="badge badge-default">{{siptaxiCallCod}}</span></td>
+		<td>LANZAR</td>
+	</tr>
+
+</template>
+
+<template name = "templateLastServices">
+	<h2>HOLA MUNDO</h2>
+</template>
