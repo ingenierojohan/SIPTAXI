@@ -3,12 +3,7 @@
 //********************************************************************************//
 
 Template.rowDataCall.helpers({
-/*	cod: function () {
-		var phone = this.siptaxiCallPhone.toString()[2];
-		var phone2 = this.siptaxiCallPhone % 100;
-		console.log ('-------- SOY COD =', phone,'-------',phone2);
-		return phone;
-	}*/
+
 	stateCalls : function(){
 		var state = this.state;
 		var exten = ':'+this.agentExten;
@@ -39,6 +34,12 @@ Template.rowDataCall.helpers({
 //********************************************************************************//
 //+++++++++++++++++++++++++TEMPLATE CUSTOMER +++++++++++++++++++++++++++++++++++++//
 //********************************************************************************//
+
+// TYPEAHEAD CUSTOMERNAMES y ADDRESSREFERENCES
+Template.templateCustomer.rendered = function () {
+	$('.inputCustomersNames').typeahead({source:Session.get('allNames')});
+	$('.inputCustomersAddressReferences').typeahead({source:Session.get('allAddressReferences')});
+};
 
 
 // Variable para el Color de la Fila Cuando el Cliente Existe
@@ -77,9 +78,10 @@ Template.templateCustomer.events({
 					<table class ="table table-bordered table-condensed">\
 						<tr>\
 							<td class="text-left">'+ timeFormat +'<br>\
-									Movil: '+ services[key].taxiMovil +'<br>\
-									Placa: '+ services[key].taxiPlaca +'<br>\
-									Agente: '+ services[key].agentName +'<br>\
+									<strong>Movil</strong>: '+ services[key].taxiMovil +'<br>\
+									<strong>Placa</strong>: '+ services[key].taxiPlaca +'<br>\
+									<strong>Agente</strong>: '+ services[key].agentName +'<br>\
+									<strong>Status</strong>: OK<br>\
 									</td>\
 						</tr>\
 					</table>\
@@ -93,47 +95,81 @@ Template.templateCustomer.events({
 			content: html
 		});
 	},
-/*
-	// Evento para Autocompletar --- Address Reference ---
-	'keyup input.inputCustomersAddressReferences' : function(){
-		AutoCompletion.autocomplete({
-			element : '.inputCustomersAddressReferences',
-			collection : AddressReferences,
-			field : 'addressReference',
-			limit : 7
-		});
-	},
 
-	// Evento para Autocompletar --- Customer Name ---
-	'keyup input.inputCustomersNames' : function(){
-		AutoCompletion.autocomplete({
-			element : '.inputCustomersNames',
-			collection : CustomersNames,
-			field : 'name',
-			limit : 7
+	// Evento Click del FORMULARIO del panel Llamadas de cada Linea.
+	'click #btnLanzar': function(evt, temp) {
+		evt.preventDefault();
+
+		// almacenamos los IDs de los diferentes Documentos de las Colecciones.
+		var currentSiptaxiCallId = this.siptaxiCallId;
+		var currentCustomerId = this.customerId;
+		var currentPanelId = this._id;
+		var currentSiptaxiCallAsteriskUniqueId = this.siptaxiCallAsteriskUniqueId;
+
+		// Convertimos en MAYUSCULAS
+		var currentName = $("#customerName-"+currentPanelId).val();
+		var currentAddress = $("#customerAddress-"+currentPanelId).val();
+		var currentAddressReference = $("#customerAddressReference-"+currentPanelId).val()
+		var currentComments = $("#customerComments-"+currentPanelId).val();
+		
+		// Objeto con los Datos Update del Customer en Mayusculas
+		var customerUpdates = {
+			name : currentName.toUpperCase(),
+			address : currentAddress.toUpperCase(),
+			addressReference : currentAddressReference.toUpperCase(),
+			comments : currentComments.toUpperCase()
+		};
+
+		// Objeto con los Datos del Nuevo Servicio
+		var newService = {
+			customerId : this.customerId,
+			customerPhone : this.siptaxiCallPhone,
+			customerAddress : customerUpdates.address,
+			customerAddressReference : customerUpdates.addressReference,
+			customerComments : customerUpdates.comments,
+			customerCod : this.siptaxiCallCod,
+			customerName : customerUpdates.name,
+			siptaxiCallId : this.siptaxiCallId,
+			siptaxiCallAsteriskUniqueId : this.siptaxiCallAsteriskUniqueId,
+			taxiId : "",
+			taxiMovil : "",
+			taxiPlaca : "",
+			agentId : Meteor.userId(),
+			agentName : Meteor.user().profile.name,
+			comments : "",
+			status : 0
+		};
+
+		// Actualizamos el Documento del Customer
+		Meteor.call('customerUpdate', currentCustomerId, customerUpdates);
+
+		// Creamos el nuevo Servicio
+		Meteor.call('servicesNew', newService);
+
+		// Borramos el Registro en PanelCalls
+		Meteor.call('panelCallsHangup', currentSiptaxiCallAsteriskUniqueId, function (error, result) {
+			if(error){
+				console.log('---> UPSsss, No se pudo Borrar el Documento en PANELCALLS ',error, '<---');
+				//return;
+			}
+			//console.log('---> Documento en PANELCALLS BORRADO OK <---');
 		});
-	}*/
+
+		// 
+	}
 });
-
-Template.templateCustomer.rendered = function () {
-	//AutoCompletion.init("input.insearchAddress","input#searchCustomerNames");
-	//AutoCompletion.init("input#searchCustomersNames");
-
-	//
-	$('.inputCustomersNames').typeahead({source:Session.get('allNames')});
-	$('.inputCustomersAddressReferences').typeahead({source:Session.get('allAddressReferences')});
-	$('.inputCustomersComments').mask("-99?h # 99-99");
-};
-
-
-
-
-
 
 
 //********************************************************************************//
 //+++++++++++++++++++++++++TEMPLATE NEW CUSTOMER++++++++++++++++++++++++++++++++++//
 //********************************************************************************//
+
+// TYPEAHEAD MOVIL AND PLACA
+Template.templateNewCustomer.rendered = function () {
+	$('.inputCustomersNames').typeahead({source:Session.get('allNames')});
+	$('.inputCustomersAddressReferences').typeahead({source:Session.get('allAddressReferences')});
+};
+
 
 // Eventos y Datos TEMPLATE NEW CUSTOMER
 Template.templateNewCustomer.events({
@@ -146,7 +182,67 @@ Template.templateNewCustomer.events({
 			trigger: 'hover',
 			placement: 'bottom'
 		});
+	},
 
+	// Evento Click del FORMULARIO del panel Llamadas de cada Linea.
+	'click #btnLanzar': function(evt, temp) {
+		evt.preventDefault();
+
+		// almacenamos los IDs de los diferentes Documentos de las Colecciones.
+		var currentSiptaxiCallId = this.siptaxiCallId;
+		var currentPanelId = this._id;
+		var currentSiptaxiCallAsteriskUniqueId = this.siptaxiCallAsteriskUniqueId;
+
+		// Convertimos en MAYUSCULAS
+		var currentName = $("#customerName-"+currentPanelId).val();
+		var currentAddress = $("#customerAddress-"+currentPanelId).val();
+		var currentAddressReference = $("#customerAddressReference-"+currentPanelId).val()
+		var currentComments = $("#customerComments-"+currentPanelId).val();
+		
+		// Objeto con los Datos Update del Customer en Mayusculas
+		var customerInsert = {
+			name : currentName.toUpperCase(),
+			address : currentAddress.toUpperCase(),
+			addressReference : currentAddressReference.toUpperCase(),
+			comments : currentComments.toUpperCase(),
+			phone: this.siptaxiCallPhone,
+			cod : this.siptaxiCallCod
+		};
+
+		// Objeto con los Datos del Nuevo Servicio
+		var newService = {
+			customerId : this.customerId,
+			customerPhone : this.siptaxiCallPhone,
+			customerAdress : customerInsert.address,
+			customerAddressReference : customerInsert.addressReference,
+			customerComments : customerInsert.comments,
+			customerCod : this.siptaxiCallCod,
+			customerName : customerInsert.name,
+			siptaxiCallId : this.siptaxiCallId,
+			siptaxiCallAsteriskUniqueId : this.siptaxiCallAsteriskUniqueId,
+			taxiId : "",
+			taxiMovil : "",
+			taxiPlaca : "",
+			agentId : Meteor.userId(),
+			agentName : Meteor.user().profile.name,
+			comments : "",
+			status : 0
+		};
+
+		// Insertamos un Nuevo Documento en CUSTOMER
+		Meteor.call('customerInsert', customerInsert);
+
+		// Creamos el nuevo Servicio
+		Meteor.call('servicesNew', newService);
+
+		// Borramos el Registro en PanelCalls
+		Meteor.call('panelCallsHangup', currentSiptaxiCallAsteriskUniqueId, function (error, result) {
+		if(error){
+			console.log('---> UPSsss, No se pudo Borrar el Documento en PANELCALLS ',error, '<---');
+			//return;
+		}
+		//console.log('---> Documento en PANELCALLS BORRADO OK <---');
+	});
 	}
 });
 

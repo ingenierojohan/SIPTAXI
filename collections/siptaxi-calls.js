@@ -1,5 +1,44 @@
 // Coleccion Ingreso de Llamdas por AMI a la plataforma
 SiptaxiCalls = new Meteor.Collection('siptaxiCalls');
+
+/*****************************************************************************************
+MAPA de la Coleccion
+------------------------------------------------------------------------------------------
+id : "string"	--->	id del documento
+agentId : "string"	---> Id del Agente que contesto la LLamada
+agentName : "string"	---> Nombre del Agente Que Contesto la LLamada
+agentExten : "int32"	---> Extension de donde se contesto la Llamada
+
+asteriskChannel : "string"	---> Nombre del Canal por donde Ingreso la LLamada
+asteriskUniqueId : "string"	---> Id de la llamada En Asterisk
+phone : "int32"	--->	Numero de telefono
+
+timeHangup : "string"	---> Formato de Fecha de Colgado
+timestampHangup : "timestamp"	--->	hora y Fecha de Colgado de la Llamada
+
+wasAnswer : "bolean"	---> True si la Llamada Fue Contestada
+------------------------------------------------------------------------------------------
+******************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*SiptaxiCalls.allow({
 	insert : function() { return true }
 });*/
@@ -60,49 +99,3 @@ if(SiptaxiCalls.find().count() === 0) {
 
 //---------------------------------------------------------------------------------------------------*/
 
-
-// Metodos de la Coleccion
-Meteor.methods({
-	// Agragamos Un nuevo Documento an siptaxiCalls
-	siptaxiCallsInsertNewCall: function(dataCall){
-		var insertCall = SiptaxiCalls.insert(dataCall);
-		console.log('---> LLAMADA REGISTRADA id = ', insertCall, '<---\n');
-		return insertCall;
-	},
-
-	// Actualizar Status Y Fecha de hangup
-	siptaxiCallsUpdateHangupCall: function(uniqueId, data){
-		console.log('---> ACTUALIZANDO siptaxiCalls con UNIQUEID = ', uniqueId, '<---');
-
-		SiptaxiCalls.update({asteriskUniqueId : uniqueId}, {$set: data}, function(err, result){
-			if (err){
-				console.log('ERROR AL HACER UPDATE en siptaxiCalls', err);
-				return;
-			}
-			if (result === 1) {
-				console.log ('---> SIPTAXICALLS UPDATE = ', result, ' ---> CAMBIO EXITOSO <---\n\n\n');
-				return result;
-			}
-			else{
-				console.log ('---> SIPTAXICALLS UPDATE = ', result,' ---> UPssss, NO SE REALIZO EL CAMBIO <---\n\n\n');
-				return;
-			}
-		});
-	},
-
-	// Metodo para Contar la cantidad de llamadas de un Numero Telefonico
-	siptaxiCallsCount : function (phone){
-		var count = SiptaxiCalls.find({phone:phone}).count();
-		console.log ('---> El Telefono : ', phone, ' ha llamadado ', count , ' veces. <---');
-		return count;
-	},
-
-	//Metodo para Buscar el Ultimo Servicio
-	siptaxiCallsLast : function (phone) {
-		var last = SiptaxiCalls.findOne({ phone : phone },{ sort : {$natural: -1}});
-		console.log ('---> La Ultima LLamada fue :', last.timeHangup, '<---');
-		return last;
-	}
-
-
-});

@@ -1,0 +1,84 @@
+<template name='panelServicesActual'>
+
+	<div class="panel-services-actual">
+		<!-- BEGIN TABLE DATA -->
+		<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-condensed">
+			<!-- BEGIN -->
+			<thead>
+			<tr>
+			<th>ESTADO</th>
+			<th>H-LLAM</th>
+			<th>H-ASIG</th>
+			<th>TELEFONO</th>
+			<th>NOMBRE</th>
+			<th>DIRECCION</th>
+			<th>REFERENCIA</th>
+			<th>NOTAS</th>
+			<th>COD</th>
+			<th>MOVIL</th>
+			<th>ACCIONES</th>
+			</tr>
+			</thead>
+			<!-- END -->
+		
+			<!-- ################### TBODY ###################  -->
+			<!-- BEGIN -->
+			<tbody>
+			{{# each servicesActual}}
+				{{>servicesActualRow}}
+			{{/each}}
+			</tbody>
+			<!-- ################### END tbody ###################  -->
+
+		</table>
+		<!-- END TABLE DATA -->
+	</div>
+
+</template>
+
+
+<template name = "servicesActualRow">
+	<tr class="{{serviceRowStatus.rowColor}}">
+
+		<!-- ESTADO  -->
+		<td><span class ="label {{serviceRowStatus.estadoColor}} services-estado">{{serviceRowStatus.estadoText}}</span></td>
+
+		<!-- Hora LLAMADA  -->
+		<td class="services-estado"><strong>{{serviceRowTimeLaunch}}</strong></td>
+
+		<!-- Hora ASIGNACION  -->
+		<td class="services-estado"><strong>{{serviceRowTimeAllocate}}</strong></td>
+
+		<!-- TELEFONO  -->
+		<td><span class ="phone-service label {{serviceRowStatus.estadoColor}}">{{customerPhone}}</span></td>
+
+		<!-- NOMBRE-->
+		<td><input type="text" class="panel-services-inputs" value="{{customerName}}"/></td>
+
+		<!-- DIRECCION -->
+		<td><input type="text" class="panel-services-inputs" value="{{customerAddress}}" /></td>
+
+		<!-- REFERENCIA-->
+		<td><input type="text" class="panel-services-inputs" value="{{customerAddressReference}}"/></td>
+
+		<!-- COMENTARIOS -->
+		<td> <input type="text" class="panel-services-inputs" value="{{customerComments}}"/> </td>
+
+		<!-- CODIGO TELEFONICO -->
+		<td><span class ="badge badge-default">{{customerCod}}</span></td>
+
+		<!-- MOVIL y PLACA -->
+<!-- 		<td> <input type="text" data-provide="typeahead" data-source= '[{{movilYplaca}}]' class="panel-services-inputs" placeholder="Ingrese un Movil..."/> </td> -->
+
+<td>
+<select id="movil-placa" style="width:200px">
+	{{#each movilYplaca}}
+		<option value="{{movil}}">{{movil}}--{{placa}}</option>
+	{{/each}}
+</select>
+</td>
+
+		<!-- Botones de ACCIONES -->
+		<td><button class="btn btn-mini btn-inverse" id="btnLanzar">LANZAR</button></td>
+	</tr>
+</template>

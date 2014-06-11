@@ -23,7 +23,6 @@ var re = new RegExp(trunkSIP);
 
 //----------------------------------------------------------------------------------------------------------------
 
-//var asteriskUniqueId = 0;
 function printAllEvents (evt){
 
 if(evt.channel){
@@ -63,7 +62,14 @@ function evaluateNewState(evt){
 		console.log ("\n---> NEWSTATE en la LLamada Entrante [",newState.state, '=', asteriskChannelStateDesc, '] <---');
 		if(newState.state === 6){
 			console.log("---> Contesto la Extension [",newState.agentExten,'] <---');
-			Meteor.call('panelCallsUpdateStatus', asteriskUniqueId, newState );
+			Meteor.call('panelCallsUpdateState', asteriskUniqueId, newState );
+
+			// Actualizamos SiptaxiCall por Answer
+			var siptaxiCallData = {
+				wasAnswer : true,
+				agentExten : newState.agentExten
+			};
+			Meteor.call('siptaxiCallsAnswer', asteriskUniqueId, siptaxiCallData );
 		}
 		return;
 }
@@ -75,10 +81,6 @@ else{
 function evaluateNewStateErr(err){
 	console.log('FALLO TO BIND ENVIRONMENT en evaluateNewState', err);
 };
-
-
-
-
 
 
 //----------------------------------------------------------------------------------------------------------------
@@ -116,7 +118,7 @@ function evaluateNewChannel(evt){
 
 		insertPanelCall.agentExten = null;
 
-// ---------  Establemos Un Nuevo Documento para siptaxiCalls  ------------------------------
+// ---------  Establecemos Un Nuevo Documento para siptaxiCalls  ------------------------------
 		//var id = new Meteor.Collection.ObjectID();
 		var timestampIncoming = new Date().getTime();
 		var timeIncoming = moment(timestampIncoming).format("dddd, MMMM DD YYYY, HH:mm:ss");
@@ -124,7 +126,6 @@ function evaluateNewChannel(evt){
 		console.log('\n---> LLAMADA NUEVA del Telefono: ', asteriskPhone , ' El '+ timeIncoming, '<---');
 
 		var newCall = {
-			//_id: id,
 			timestampIncoming : timestampIncoming,
 			timeIncoming : timeIncoming,
 			timestampHangup : '',
@@ -132,9 +133,11 @@ function evaluateNewChannel(evt){
 			phone : asteriskPhone,
 			asteriskChannel : asteriskChannel,
 			asteriskUniqueId : asteriskUniqueId,
-			status : '0',
+			//status : '0',
 			agentId : '',
-			agentName : ''
+			agentName : '',
+			agentExten : null,
+			wasAnswer : false
 		};
 
 		insertPanelCall.siptaxiCallId = siptaxiCallsInsertNewCall(newCall);
@@ -152,7 +155,7 @@ function evaluateNewChannel(evt){
 			// Llenamos Los Datos de Customer en Panel Calls
 			insertPanelCall.isNewCustomer = false;
 			insertPanelCall.customerId = customer._id;
-			insertPanelCall.customerNames = customer.names;
+			insertPanelCall.customerName = customer.name;
 			insertPanelCall.customerAddress = customer.address;
 			insertPanelCall.customerAddressReference = customer.addressReference;
 			insertPanelCall.customerComments = customer.comments;
@@ -214,8 +217,8 @@ function evaluateHangupChannel(evt){
 
 		var siptaxiCallsHangup = {
 			timestampHangup : timestampHangup,
-			timeHangup: timeHangup,
-			status : '2'
+			timeHangup: timeHangup
+			//status : '2'
 		};
 
 		// Estado de la Llamada Colgada
@@ -229,8 +232,8 @@ function evaluateHangupChannel(evt){
 		// Llamamos al Metodo de la coleccion siptaxiCalls para actualizar la Fecha de Colgado
 		Meteor.call('siptaxiCallsUpdateHangupCall', asteriskUniqueId, siptaxiCallsHangup);
 
-		// Llamamos la Metodo de la Coleccion panelCalls con state 0 que es Colgado
-		Meteor.call('panelCallsUpdateStatus', asteriskUniqueId, newState);
+		// Llamamos al Metodo de la Coleccion panelCalls con state 0 que es Colgado
+		Meteor.call('panelCallsUpdateState', asteriskUniqueId, newState);
 
 		// Retrasamos el Remove del Documento en el panel calls.
 		Meteor.setTimeout(function(){removePanelCallHangup(asteriskUniqueId);}, 3000);

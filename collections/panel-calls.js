@@ -1,6 +1,46 @@
 // Coleccion temporal del panel de Llamadas
 PanelCalls = new Meteor.Collection('panelCalls');
 
+
+/*****************************************************************************************
+MAPA de la Coleccion
+------------------------------------------------------------------------------------------
+_id : "string"	---> Id del Documento
+
+agentExten : "int32"	--->	Numero de la Extension que Contesto la LLamada, Null cuando no han contestando
+
+customerAddress : "string"	--->	Direccion del Cliente, en Blanco Si no Exite
+customerAddressReference : "string"	--->	Referencia de la Direccion del Cliente
+customerComments : "string"	--->	Comentarios del Cliente
+customerId : "string"	--->	Id del Documento del Clinte
+customerName : "string"	--->	Nombre del Cliente
+
+isNewCustomer : "bolean"	---> True si existe el Cliente, false y no Existe
+isRecall : "bolean"	---> True Cuando a Llamado antes de 10 minutos despues de la Ultima Llamada
+
+servicesLast : "object"	--->	Objeto con La Info de los 2 Ultimos Servicios del Cliente
+
+siptaxiCallAsteriskUniqueId : "string"	---> Id de la Llamada en Asterisk
+siptaxiCallCod : "int32"	--->	Codigo del Cliente
+siptaxiCallCount : "int32"	--->	Numero de Llamadas que ha Realizado el Cliente
+siptaxiCallId : "string"	---> Id de la Llamada
+siptaxiCallLast : "object"	--->	Objeto con TODA la Info del ultima LLamada.
+siptaxiCallPhone : "int32"	--->	Telefono del Cliente
+
+state : "int32"	---> Estado de la LLamada en El Panel
+	0 = Colgado
+	4 = Timbrando
+	6 = Hablando
+
+------------------------------------------------------------------------------------------
+******************************************************************************************/
+
+
+
+
+
+
+
 /*// Formato de Inicializacion de la Coleccion
 if(PanelCalls.find().count() === 0) {
 	var id = new Meteor.Collection.ObjectID();		// Id del documento
@@ -49,36 +89,3 @@ if(PanelCalls.find().count() === 0) {
 }
 
 //----------------------------------------------------------------------------------------------*/
-
-// Metodos de la Coleccion
-
-Meteor.methods({
-	panelCallsInsert : function (data) {
-		var insertCall = PanelCalls.insert(data);
-		console.log('\n---> NUEVO DOCUMENTO EN PANEL CALLS... ID = ', insertCall, '<---\n');
-		return insertCall;
-	},
-
-	panelCallsHangup : function (uniqueId) {
-		//PanelCalls.remove({siptaxiCallAsteriskUniqueId : uniqueId});
-		console.log('---> Registro Borrado OK <---');
-	},
-
-	panelCallsUpdateStatus : function (uniqueId, data){
-		PanelCalls.update({siptaxiCallAsteriskUniqueId : uniqueId}, {$set:data}, function(err, result){
-			if (err){
-				console.log('ERROR AL HACER UPDATE en STATUS panelCalls', err);
-				return;
-			}
-			if (result === 1) {
-				console.log ('---> PANELCALLS STATUS [',data.state,'] UPDATE = ', result, ' ---> CAMBIO EXITOSO <---\n\n\n');
-				return result;
-			}
-			else{
-				console.log ('---> PANELCALLS STATUS [',data.state,'] UPDATE  = ', result,' ---> UPssss, NO SE REALIZO EL CAMBIO <---\n\n\n');
-				return;
-			}
-		});
-	}
-
-});

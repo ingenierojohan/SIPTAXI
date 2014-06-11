@@ -1567,6 +1567,7 @@ input[type="submit"].btn.btn-mini {
 .nav-tabs > .active > a,
 .nav-tabs > .active > a:hover,
 .nav-tabs > .active > a:focus {
+  background-color: #6d84b4;
   color: #555555;
   border: 1px solid #e9eaed;
   border-bottom-color: transparent;
@@ -3644,7 +3645,7 @@ a.thumbnail:focus {
 .social-box header .tools .nav-tabs li,
 .social-box .header .title-right .nav-tabs li,
 .social-box header .title-right .nav-tabs li {
-  margin-bottom: -5px;
+  margin-bottom: 0px;
 }
 .social-box .header .tools .nav-tabs > li > a,
 .social-box header .tools .nav-tabs > li > a,
@@ -3669,6 +3670,7 @@ a.thumbnail:focus {
 .social-box header .title-right .nav-tabs > .active > a:focus {
   color: #333 !important;
   background-color: #ffffff !important;
+/*  background-color: #468847 !important;*/
   border: 1px solid #C2C2C2 !important;
   border-bottom-color: transparent !important;
 }

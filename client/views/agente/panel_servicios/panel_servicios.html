@@ -1,0 +1,25 @@
+<template name='panelServicios'>
+
+	<div class="social-box">
+		<div class="header">
+			<h4><i class="icon-desktop"></i>Panel Servicios</h4>
+			<div class="tools">
+				<ul class="nav nav-tabs panelservicios">
+					<li><a href="#servicesActual" data-toggle="tab">Servicios Actuales</a></li>
+					<li><a href="#servicesDay" data-toggle="tab">Servicios del Día</a></li>
+					<li><a href="#servicesAll" data-toggle="tab">Buscar Servicios</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="body ">
+<!-- 			<div class="panel-despacho"> -->
+				<div class="tab-content">
+					<div class="tab-pane active" id="servicesActual">{{> panelServicesActual }}</div>
+					<div class="tab-pane" id="servicesDay">{{> panelServicesDay }}</div>
+					<div class="tab-pane" id="servicesAll">{{> panelServicesSearch }}</div>
+				</div>
+<!-- 			</div> -->
+		</div>
+	</div>
+
+</template>

@@ -1,6 +1,60 @@
 // Coleccion de los Clientes
 Services = new Meteor.Collection('services');
 
+/*****************************************************************************************
+MAPA de la Coleccion
+------------------------------------------------------------------------------------------
+_id : Id del documento
+
+customerId : Id del Cliente
+customerPhone : Telefono del Cliente
+customerAddress : Direccion del Cliente
+customerAddressReference : Referencia de la Direccion
+customerAddressComments : Notas de la Direccion
+customerName : Nombre del Cliente
+customerCod : Codigo del Cliente
+
+siptaxiCallId : id de la Llamada
+siptaxiCallasteriskUniqueId : Id de la Llamada en asterisk
+
+taxiId : id del Taxi
+taxiMovil : Numero del Movil del taxi
+taxiPlaca : Placa del Taxi
+
+agentId : Id del agente que despacho el Servicio
+agentName : Nombre del agente
+
+timeLaunch : Hora en que fue Lazado del Servicio (presionado el Boton Lanzar)
+timeAllocate : Hora en que Fue Asignado el Servicio
+timePickup : Hora en que Fue recogido el Servicio
+timeCancel : Hora en que Fue Cancelado el Servicio
+timeReallocate : Hora en que Fue ReAsignado el Servicio
+
+comments : Observaciones del Servicio
+
+status : 
+	0 = servicio Lanzado
+	1 = servicio Asignado
+	2 = servicio Finalizado
+	3 = servicio Cancelado
+
+wasReallocate : boleano
+
+		si hay una reasigancion
+reallocateTaxiId : id del Taxi
+reallocateTaxiMovil : Numero del Movil del taxi
+reallocateTaxiPlaca : Placa del Taxi
+reallocateReason : Motivo de la reasigancion
+
+cancelReason : motivo de la Cancelacion
+------------------------------------------------------------------------------------------
+******************************************************************************************/
+
+
+
+
+
+
 /*// Formato de Inicializacion de la Coleccion
 if(Services.find().count() === 0) {
 	var id = new Meteor.Collection.ObjectID();		// Id del documento
@@ -62,27 +116,5 @@ if(Services.find().count() === 0) {
 
 	var insertService = Services.insert(newService);
 		console.log('---> services --PRIMER SERVICIO REGISTRADO id = ', insertService, '<---\n');
-}
+}*/
 
-//----------------------------------------------------------------------------------------------*/
-
-// MEtodos de la Coleccion
-Meteor.methods({
-
-	// Metodo para Contar la cantidad de servicios de un Numero Telefonico
-	servicesCount : function (phone){
-		var count = Services.find({customerPhone:phone}).count();
-		console.log ('---> El Telefono : ', phone, ' ha Tenido  ', count , ' SERVICIOS <---');
-		return count;
-	},
-
-	//Metodo para Buscar el Ultimo Servicio
-	servicesLast : function (phone) {
-		var lastServices = [];
-		Services.find({customerPhone:phone},{sort:{_id: 1}, limit:2}).forEach(function (doc) {
-			lastServices.push(doc)
-		});
-		console.log ('---> Los ULTIMOS 2 SERVICIOS OK <---');
-		return lastServices;
-	}
-});

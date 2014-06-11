@@ -1,0 +1,46 @@
+
+.panel-services-actual td {
+	font-size: 0.9em;
+	text-align: center;
+	padding: 0.3em 0.3em;
+	margin: 0;
+	vertical-align: middle;
+}
+
+
+.panel-services-actual td .panel-services-inputs{
+	font-size: 0.9em;
+	padding: 0 0.2em;
+	font-weight: bold; 
+	width: 90%;
+	margin : 0;
+	vertical-align: middle;
+
+}
+
+.panel-services-actual td .panel-services-inputs-movil{
+	font-size: 0.9em;
+	padding: 0 0.2em;
+	font-weight: bold; 
+	width: 100px;
+	margin : 0;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.services-estado {
+	font-size: 1em;
+	text-align: center;
+	padding: 0.2em 0.2em;
+	margin: 0;
+	vertical-align: middle;
+}
+
+.panel-services-actual td .phone-service {
+	font-size: 1em;
+	letter-spacing: 1px;
+	vertical-align: middle;
+	padding: 0.2em 0.2em;
+	vertical-align: middle;
+	margin : 0;
+}
