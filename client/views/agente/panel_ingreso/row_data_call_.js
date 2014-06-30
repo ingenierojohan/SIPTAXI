@@ -35,13 +35,6 @@ Template.rowDataCall.helpers({
 //+++++++++++++++++++++++++TEMPLATE CUSTOMER +++++++++++++++++++++++++++++++++++++//
 //********************************************************************************//
 
-// TYPEAHEAD CUSTOMERNAMES y ADDRESSREFERENCES
-Template.templateCustomer.rendered = function () {
-	$('.inputCustomersNames').typeahead({source:Session.get('allNames')});
-	$('.inputCustomersAddressReferences').typeahead({source:Session.get('allAddressReferences')});
-};
-
-
 // Variable para el Color de la Fila Cuando el Cliente Existe
 Template.templateCustomer.rowColor= function (){
 	if(this.isRecall === true) {
@@ -50,7 +43,16 @@ Template.templateCustomer.rowColor= function (){
 	return "success";
 };
 
-// Evetos del Template
+Template.templateCustomer.rendered = function () {
+	$('.typeaheadCustomerName').typeahead({source:Session.get('typeaheadCustomerName')});
+};
+
+Template.templateCustomer.helpers({
+
+});
+
+
+// Evetos del Template CUSTOMER
 Template.templateCustomer.events({
 
 	// Evento para ver info de La Ultima Llamada
@@ -99,64 +101,15 @@ Template.templateCustomer.events({
 	// Evento Click del FORMULARIO del panel Llamadas de cada Linea.
 	'click #btnLanzar': function(evt, temp) {
 		evt.preventDefault();
+		launchService(this);
+	},
 
-		// almacenamos los IDs de los diferentes Documentos de las Colecciones.
-		var currentSiptaxiCallId = this.siptaxiCallId;
-		var currentCustomerId = this.customerId;
-		var currentPanelId = this._id;
-		var currentSiptaxiCallAsteriskUniqueId = this.siptaxiCallAsteriskUniqueId;
-
-		// Convertimos en MAYUSCULAS
-		var currentName = $("#customerName-"+currentPanelId).val();
-		var currentAddress = $("#customerAddress-"+currentPanelId).val();
-		var currentAddressReference = $("#customerAddressReference-"+currentPanelId).val()
-		var currentComments = $("#customerComments-"+currentPanelId).val();
-		
-		// Objeto con los Datos Update del Customer en Mayusculas
-		var customerUpdates = {
-			name : currentName.toUpperCase(),
-			address : currentAddress.toUpperCase(),
-			addressReference : currentAddressReference.toUpperCase(),
-			comments : currentComments.toUpperCase()
-		};
-
-		// Objeto con los Datos del Nuevo Servicio
-		var newService = {
-			customerId : this.customerId,
-			customerPhone : this.siptaxiCallPhone,
-			customerAddress : customerUpdates.address,
-			customerAddressReference : customerUpdates.addressReference,
-			customerComments : customerUpdates.comments,
-			customerCod : this.siptaxiCallCod,
-			customerName : customerUpdates.name,
-			siptaxiCallId : this.siptaxiCallId,
-			siptaxiCallAsteriskUniqueId : this.siptaxiCallAsteriskUniqueId,
-			taxiId : "",
-			taxiMovil : "",
-			taxiPlaca : "",
-			agentId : Meteor.userId(),
-			agentName : Meteor.user().profile.name,
-			comments : "",
-			status : 0
-		};
-
-		// Actualizamos el Documento del Customer
-		Meteor.call('customerUpdate', currentCustomerId, customerUpdates);
-
-		// Creamos el nuevo Servicio
-		Meteor.call('servicesNew', newService);
-
-		// Borramos el Registro en PanelCalls
-		Meteor.call('panelCallsHangup', currentSiptaxiCallAsteriskUniqueId, function (error, result) {
-			if(error){
-				console.log('---> UPSsss, No se pudo Borrar el Documento en PANELCALLS ',error, '<---');
-				//return;
-			}
-			//console.log('---> Documento en PANELCALLS BORRADO OK <---');
-		});
-
-		// 
+	'keyup :input' : function(evt, temp){
+		if (evt.which === 13){
+			launchService(this);
+		}
 	}
+	
 });
 
 
@@ -164,12 +117,14 @@ Template.templateCustomer.events({
 //+++++++++++++++++++++++++TEMPLATE NEW CUSTOMER++++++++++++++++++++++++++++++++++//
 //********************************************************************************//
 
-// TYPEAHEAD MOVIL AND PLACA
 Template.templateNewCustomer.rendered = function () {
-	$('.inputCustomersNames').typeahead({source:Session.get('allNames')});
-	$('.inputCustomersAddressReferences').typeahead({source:Session.get('allAddressReferences')});
+	$('.typeaheadCustomerName').typeahead({source:Session.get('typeaheadCustomerName')});
 };
 
+
+Template.templateNewCustomer.helpers({
+
+});
 
 // Eventos y Datos TEMPLATE NEW CUSTOMER
 Template.templateNewCustomer.events({
@@ -187,63 +142,99 @@ Template.templateNewCustomer.events({
 	// Evento Click del FORMULARIO del panel Llamadas de cada Linea.
 	'click #btnLanzar': function(evt, temp) {
 		evt.preventDefault();
+		launchService(this);
+	},
 
-		// almacenamos los IDs de los diferentes Documentos de las Colecciones.
-		var currentSiptaxiCallId = this.siptaxiCallId;
-		var currentPanelId = this._id;
-		var currentSiptaxiCallAsteriskUniqueId = this.siptaxiCallAsteriskUniqueId;
+	'keyup :input' : function(evt, temp){
+		if (evt.which === 13){
+			launchService(this);
+		}
+	}
+});
 
-		// Convertimos en MAYUSCULAS
-		var currentName = $("#customerName-"+currentPanelId).val();
-		var currentAddress = $("#customerAddress-"+currentPanelId).val();
-		var currentAddressReference = $("#customerAddressReference-"+currentPanelId).val()
-		var currentComments = $("#customerComments-"+currentPanelId).val();
+//********************************************************************************//
+//+++++++++++++++++++++++++ FUNCIONES GENERALES ++++++++++++++++++++++++++++++++++//
+//********************************************************************************//
+function launchService (data){
+
+	var currentPanelId = data._id;	// id de la Fila Actual
+	
+	// Objeto con los Datos del Customer en Mayusculas de los diferentes INPUTS
+	var customerData = {
+		name : $("#customerName-"+currentPanelId).val().toUpperCase(),
+		address : $("#customerAddress-"+currentPanelId).val().toUpperCase(),
+		addressReference : $("#customerAddressReference-"+currentPanelId).val().toUpperCase(),
+		comments : $("#customerComments-"+currentPanelId).val().toUpperCase()
+	};
+
+	// Si es un Cliente Nuevo Creamos Documento, si No, solo Actualiazamos campos
+	if(data.isNewCustomer){
+		customerData.phone = data.siptaxiCallPhone;
+		customerData.cod = data.siptaxiCallCod;
 		
-		// Objeto con los Datos Update del Customer en Mayusculas
-		var customerInsert = {
-			name : currentName.toUpperCase(),
-			address : currentAddress.toUpperCase(),
-			addressReference : currentAddressReference.toUpperCase(),
-			comments : currentComments.toUpperCase(),
-			phone: this.siptaxiCallPhone,
-			cod : this.siptaxiCallCod
-		};
+		
+		// Llamamos al Metodo para Insertar y nos retorna el Id
+		Meteor.call('customerInsert', customerData);
+		customerData.id = null;
+	}
+	else{
+		// Actualizamos el Documento del Customer
+		customerData.id = data.customerId; // Obtenemos el Id del Customer por el objeto this.
+		Meteor.call('customerUpdate', data.customerId, customerData);
+	}
+
+
+		// Almacenamos El Nombre en la Typeahead CustomerNames
+		// Consultamos si Existe un Nombre de Usario
+		if(!customerData.name==""){
+			var customerName = CustomersNames.findOne({name:customerData.name});
+			if (!customerName){
+				Meteor.call('customersNamesInsert', customerData.name, function (error, result) {});
+			}
+		}
+
+		if(!customerData.addressReference==""){
+			var customerAddressReference = AddressReferences.findOne({addressReference:customerData.addressReference});
+			if (!customerAddressReference){
+				Meteor.call('customersAddressReferenceInsert', customerData.addressReference, function (error, result) {});
+			}
+		}
 
 		// Objeto con los Datos del Nuevo Servicio
 		var newService = {
-			customerId : this.customerId,
-			customerPhone : this.siptaxiCallPhone,
-			customerAdress : customerInsert.address,
-			customerAddressReference : customerInsert.addressReference,
-			customerComments : customerInsert.comments,
-			customerCod : this.siptaxiCallCod,
-			customerName : customerInsert.name,
-			siptaxiCallId : this.siptaxiCallId,
-			siptaxiCallAsteriskUniqueId : this.siptaxiCallAsteriskUniqueId,
+			customerId : customerData.id,
+			customerPhone : data.siptaxiCallPhone,
+			customerAddress : customerData.address,
+			customerAddressReference : customerData.addressReference,
+			customerComments : customerData.comments,
+			customerCod : data.siptaxiCallCod,
+			customerName : customerData.name,
+			siptaxiCallId : data.siptaxiCallId,
+			siptaxiCallAsteriskUniqueId : data.siptaxiCallAsteriskUniqueId,
 			taxiId : "",
 			taxiMovil : "",
 			taxiPlaca : "",
 			agentId : Meteor.userId(),
-			agentName : Meteor.user().profile.name,
+			agentName : Meteor.user().username,
 			comments : "",
 			status : 0
 		};
 
-		// Insertamos un Nuevo Documento en CUSTOMER
-		Meteor.call('customerInsert', customerInsert);
-
 		// Creamos el nuevo Servicio
-		Meteor.call('servicesNew', newService);
+		Meteor.call('servicesNew', newService, function(error, result) {
+				if (error){
+					showNotificaciones(mapaNotificaciones.lanzarServicioError);
+				}
+				showNotificaciones(mapaNotificaciones.lanzarServicioOk);
+		});
 
 		// Borramos el Registro en PanelCalls
-		Meteor.call('panelCallsHangup', currentSiptaxiCallAsteriskUniqueId, function (error, result) {
-		if(error){
-			console.log('---> UPSsss, No se pudo Borrar el Documento en PANELCALLS ',error, '<---');
-			//return;
-		}
-		//console.log('---> Documento en PANELCALLS BORRADO OK <---');
-	});
-	}
-});
+		Meteor.call('panelCallsHangup', data.siptaxiCallAsteriskUniqueId, function (error, result) {
+			if(error){
+				console.log('---> UPSsss, No se pudo Borrar el Documento en PANELCALLS ',error, '<---');
+				//return;
+			}
+			//console.log('---> Documento en PANELCALLS BORRADO OK <---');
+		});
 
-//------------------------------------------------------------------------------------------
+}

@@ -1,0 +1,59 @@
+#!/usr/bin/php -q
+<?php
+
+require('phpagi/phpagi.php');		// Libreria AGI PHP
+
+// ------------------------------------ Conexion a DB SIPTAXI ------------------------------------------------------
+	$mongo = new Mongo();																									// Instanciamos el Objeto
+	$db = $mongo->selectDB("SIPTAXI");																		// Seleccion de db
+	$db->authenticate('SIPTAXI-admin', 'siptelco.08');									// Autenticacion (user/passwd)
+	$c_asteriskCalls = $mongo->selectCollection($db,"asteriskCalls");		// Seleccion de la Coleccion
+//-----------------------------------------------------------------------------------------------------------------
+
+// I/O PHP
+$stdin = fopen('php://stdin', 'r'); 
+$stdout = fopen('php://stdout','w'); 
+$stdlog = fopen('agi.log', 'w');
+error_reporting(E_ALL);
+//------------------------------------------------
+
+//-----------  Variables enviadas por Asterisk
+$agi = new AGI();
+$unique=$agi->request['agi_uniqueid'];
+$cid=$agi->request['agi_callerid'];
+$linea="L".$argv[1];
+//------------------------------------------------
+
+// VARIABLES ADCIONALES
+// status
+//	0 = Nueva llamada (Write Asterisk)
+//	1 = Llamada recibida por la app SIPTAXI (write Meteor)
+//	2 = Llamada Finalizada por la app SIPTAXI (write Meteor)
+//	3 = Llamada Finalizada por Asterisk (write Asterisk)
+$fecha = new DateTime();
+$timestampHangup = $fecha->getTimestamp();
+//------------------------------------------------
+sleep(3);
+// Obtenemos el Documento Correspondiente a la Llamada Actual
+$actualCall = $c_asteriskCalls->findOne( array('unique'=>$unique)	);
+
+if ($actualCall['status'] != '2' or $actualCall['status']= null)
+{
+	// Array Con Valores a Actualizar
+	$updateCall = array('$set'=> array("timestampHangup"=>$timestampHangup ,"status"=>'3'));
+	
+	// Metodo para Actualizar Documento
+	$c_asteriskCalls->update(
+	array('uniqueId' => $unique),
+	$updateCall
+);
+	$agi->noop("--- TEL = ".$cid." con UNIQUE ID = ".$unique." Finalizado por ASTERISK con status 3 en asteriskCalls ---------");
+}
+else
+{
+$agi->noop("--- TEL = ".$cid." con UNIQUE ID = ".$unique." Finalizado por METEOR con status 2 en asteriskCalls ---------");
+}
+
+//------------------------------------------------
+exit(0);
+?>

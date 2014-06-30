@@ -5,7 +5,7 @@
 				<div class="container-fluid">
 					
 					<!-- BEGIN BRAND LINK -->
-					<span class="brand label label-success"><i class="icon-user"></i>&nbsp;&nbsp;{{usernameAgent}}</span>
+					<span class="brand label label-success"><i class="icon-headphones"></i>&nbsp;&nbsp;{{usernameAgent}}</span>
 					<!-- END BRAND LINK -->
 					
 					<!-- NAV IZQUIERDO -->
@@ -17,6 +17,10 @@
 						<li class="divider-vertical"></li>
 					</ul>
 
+					<a href="#" class="btn btn-info" id="btnNewCustomer"><i class="icon-user"></i>&nbsp;&nbsp;Nuevo Cliente</a> 
+
+					<a href="#" class="btn btn-success" id="btnNewService"><i class="icon-desktop"></i>&nbsp;&nbsp;Nuevo Servicio</a>
+					
 					<!-- NAV DERECHO -->
 					<ul class="nav nav-indicators pull-right">
 						<!-- LOG OUT -->
@@ -28,4 +32,131 @@
 			</div>
 		</nav>
 	</header>
+
+
+
+	<!-- MODAL NUEVO CLIENTE -->
+	<div id="modalNewCustomer" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form id="formNewCustomer">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel" class="text-center alert alert-info">CREAR NUEVO CLIENTE</h3>
+			</div>
+
+			<div class="modal-body">
+				<!-- INPUT TELEFONO CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Telefono:</span>
+					<input type="text" class="span2" id="inputNewCustomerPhone" placeholder ="Telefono del Cliente" >
+				</div>
+
+				<!-- INPUT NOMBRE CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Nombre:</span>
+					<input type="text" class="span3 typeaheadCustomerName" id="inputNewCustomerName" placeholder ="Nombre del Cliente">
+				</div>
+
+				<!-- INPUT DIRECION CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Dirección:</span>
+					<input type="text" class="span3" id="inputNewCustomerAddress" placeholder ="CRA 00 # 00-00" >
+				</div>
+
+				<!-- INPUT REFERENCIA CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Referencia:</span>
+					<input type="text" class="span3 typeaheadCustomerAddressReference" id="inputNewCustomerAddressReference" placeholder ="Barrio-Sector-Referencia" /> 
+				</div>
+
+				<!-- INPUT NOTAS CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Notas:</span>
+					<input type="text" class="span4" id="inputNewCustomerComments" placeholder ="Ingrese las Notas  sobre el Cliente" >
+				</div>
+
+				<!-- CODIGO TELEFONICO -->
+				<div class="input-prepend">
+					<span class="add-on">Codigo de Seguridad:</span>
+					<span class="span1 uneditable-input"> {{customerCodPhone}}</span>
+				</div>
+
+				<!-- Notificaciones del Modal -->
+				<div class="{{newCustomerNotifications.alert}}"><p class="text-center">{{newCustomerNotifications.message}}</p></div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+				<button type="submit" id="btnModalSaveCustomer" class="btn btn-success">Guardar</button>
+			</div>
+		</form>
+	</div>
+
+
+	<!-- MODAL NUEVO SERVICIO -->
+	<div id="modalNewService" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<form id="formNewService">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="myModalLabel" class="text-center alert alert-info">CREAR NUEVO SERVICIO</h3>
+			</div>
+
+			<div class="modal-body">
+				<!-- INPUT TELEFONO CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Telefono:</span>
+					<input type="text" class="span2" id="inputNewServicePhone" placeholder ="Telefono del Cliente" >
+				</div>
+
+				<!-- INPUT NOMBRE CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Nombre:</span>
+					<input type="text" class="span3 typeaheadCustomerName" id="inputNewServiceName" placeholder ="Nombre del Cliente">
+				</div>
+
+				<!-- INPUT DIRECION CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Dirección:</span>
+					<input type="text" class="span3" id="inputNewServiceAddress" placeholder ="CRA 00 # 00-00" >
+				</div>
+
+				<!-- INPUT REFERENCIA CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Referencia:</span>
+					<input type="text" class="span3 typeaheadCustomerAddressReference" id="inputNewServiceAddressReference" placeholder ="Barrio-Sector-Referencia" /> 
+				</div>
+
+				<!-- INPUT NOTAS CLIENTE -->
+				<div class="input-prepend">
+					<span class="add-on">Notas:</span>
+					<input type="text" class="span4" id="inputNewCustomerServieComments" placeholder ="Ingrese las Notas sobre el Cliente" >
+				</div>
+
+				<!-- CODIGO TELEFONICO -->
+				<div class="input-prepend">
+					<span class="add-on">Codigo de Seguridad:</span>
+					<span class="span1 uneditable-input"> {{customerCodPhone}}</span>
+				</div>
+
+				<!-- INPUT NOTAS DEL SERVICIO -->
+				<div class="input-prepend">
+					<span class="add-on">Notas del Servicio:</span>
+					<input type="text" class="span4" id="inputNewServieComments" placeholder ="Ingrese las Notas sobre el Servicio" >
+				</div>
+
+				<!-- INPUT MOVIL -->
+				<div class="input-prepend">
+					<span class="add-on">Movil:</span>
+					<input type="text" id="inputNewServiceMovil" data-provide="typeahead" data-source= '[{{movilYplaca}}]' placeholder="Ingrese un Movil..."/>
+				</div>
+
+				<!-- Notificaciones del Modal -->
+				<div class="{{newCustomerNotifications.alert}}"><p class="text-center">{{newCustomerNotifications.message}}</p></div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+				<button type="submit" id="btnModalSaveService" class="btn btn-success">Guardar</button>
+			</div>
+		</form>
+	</div>
+
+
 </template>

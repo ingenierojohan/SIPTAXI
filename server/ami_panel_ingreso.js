@@ -1,59 +1,48 @@
+//***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
 // Escuchamos todos los Eventos del Asterisk
 //ami.on('managerevent', printAllEvents);
 ami.on('newchannel', Meteor.bindEnvironment(evaluateNewChannel, evaluateNewChannelErr));
-
 ami.on('newstate', Meteor.bindEnvironment(evaluateNewState, evaluateNewStateErr));
-
 ami.on('hangup', Meteor.bindEnvironment(evaluateHangupChannel, evaluateHangupChannelErr));
-
-
 //ami.on('hangup', printAllEvents);
+//---------------------------------------------------------------------------------------------------
+//***************************************************************************************************
 
-//allow any connected client to listen on the stream
-/*notificationsAsterisk.permissions.read(function(eventName) {
-		return true;
-});*/
 
-//notifications.on('HOLA',function(message){console.log('-------------------- NOTIFI--------', message);});
-
-//---------------------------------------------------------------------------------------------------------------
+//***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
 // Creamos una expresion regular para comparar con los eventos AMI de NEW CHANNEL y HANGUP
-var trunkSIP = "^SIP/UNE-2486385-"; 
+var trunkSIP = "^SIP/UNE-2486385-"; // Phone On Line Pruebas
+//var trunkSIP = "^SIP/UNE-5207370-"; // Trunk SIP COOTRANSCEJA
 var re = new RegExp(trunkSIP);
+//---------------------------------------------------------------------------------------------------
+//***************************************************************************************************
 
-//----------------------------------------------------------------------------------------------------------------
 
+//***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
+// Funcion de para Imprimir todos los eventos ami
 function printAllEvents (evt){
-
-if(evt.channel){
-	if (evt.channel.match(re)){
-		console.log ('\n------ >> EVENTO <<------');
-		console.log (evt);
-		console.log ('------------------------ \n');
-
-		asteriskUniqueId1 = evt.uniqueid;
+	if(evt.channel){
+		if (evt.channel.match(re) && evt.exten!=""){
+			console.log ('\n------ >> EVENTO <<------');
+			console.log (evt);
+			console.log ('------------------------ \n');
+		}
 	}
-}
-
-	if (evt.uniqueid === asteriskUniqueId1){
-		printUniqueId(evt, asteriskUniqueId1);
-	}
-
-
 };
-
-function printUniqueId(evt, asteriskUniqueId1){
-		console.log ('\n------ >> EVENTO UNUQUE <<------',asteriskUniqueId1);
-		console.log (evt);
-		console.log ('------------------------ \n');
-};
+//---------------------------------------------------------------------------------------------------
+//***************************************************************************************************
 
 
 
-//------ Evaluamos Los Nuevos estados desde ami.ON
+//***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
+//------ Evaluamos Los Nuevos ESTADOS desde ami.ON
 function evaluateNewState(evt){
-
-	if (evt.channel.match(re)){
+	// Comparamos si el Channel pasa la expresion Regular y si no es una llamada saliente
+	if (evt.channel.match(re)&& evt.exten!=""){
 		var newState = {};
 		var asteriskUniqueId = evt.uniqueid;
 		var asteriskChannelStateDesc = evt.channelstatedesc;
@@ -64,7 +53,7 @@ function evaluateNewState(evt){
 			console.log("---> Contesto la Extension [",newState.agentExten,'] <---');
 			Meteor.call('panelCallsUpdateState', asteriskUniqueId, newState );
 
-			// Actualizamos SiptaxiCall por Answer
+			// Actualizamos SiptaxiCall por Answer1000
 			var siptaxiCallData = {
 				wasAnswer : true,
 				agentExten : newState.agentExten
@@ -72,23 +61,26 @@ function evaluateNewState(evt){
 			Meteor.call('siptaxiCallsAnswer', asteriskUniqueId, siptaxiCallData );
 		}
 		return;
-}
-else{
-	console.log ("\n>>> SE DETECTO UN NEW STATE PERO NO ES DE LA LLAMADA ENTRANTE <<< ");
+	}
+	else{
+		console.log ("\n>>> SE DETECTO UN NEW STATE PERO NO ES DE LA LLAMADA ENTRANTE <<< ");
 	return;
-}
+	}
 };
+
 function evaluateNewStateErr(err){
 	console.log('FALLO TO BIND ENVIRONMENT en evaluateNewState', err);
 };
+//---------------------------------------------------------------------------------------------------
+//***************************************************************************************************
 
 
-//----------------------------------------------------------------------------------------------------------------
 
+//***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
 // Funcion para Evaluar las Llamadas Entrantes desde ami.on
 function evaluateNewChannel(evt){
-	//console.log ('---> New CHANNEL <---');
-	if (evt.channel.match(re)){
+	if (evt.channel.match(re)&& evt.exten!=""){
 
 		// Variables de la Funcion
 		var asteriskChannel = evt.channel;
@@ -112,13 +104,11 @@ function evaluateNewChannel(evt){
 		}
 
 		insertPanelCall.siptaxiCallAsteriskUniqueId = asteriskUniqueId;
-
 		insertPanelCall.siptaxiCallPhone = asteriskPhone;
 		insertPanelCall.siptaxiCallCod = asteriskPhone % 100;
-
 		insertPanelCall.agentExten = null;
 
-// ---------  Establecemos Un Nuevo Documento para siptaxiCalls  ------------------------------
+		// ---------  Establecemos Un Nuevo Documento para siptaxiCalls  ------------------------------
 		//var id = new Meteor.Collection.ObjectID();
 		var timestampIncoming = new Date().getTime();
 		var timeIncoming = moment(timestampIncoming).format("dddd, MMMM DD YYYY, HH:mm:ss");
@@ -142,9 +132,9 @@ function evaluateNewChannel(evt){
 
 		insertPanelCall.siptaxiCallId = siptaxiCallsInsertNewCall(newCall);
 
-//---------------------------------------------------------------------------------------------------------
+		//---------------------------------------------------------------------------------------------------------
 
-// -----Buscamos si existe un Cliente con el numero telefonico.
+		// -----Buscamos si existe un Cliente con el numero telefonico.
 		customer = customerFind(asteriskPhone);
 
 		// Si no Existe Marcamos Como Customer Nuevo
@@ -172,7 +162,7 @@ function evaluateNewChannel(evt){
 			}
 		}
 
-//---------------------------------------------------------------------------------------------------------
+		//---------------------------------------------------------------------------------------------------------
 		// Insertamos todos los Documentos Recolectados.
 		insertPanelCall.state = 4;		// es estado 4 es Timbrando segun Asterisk, 6 = hablando;
 		panelCallsInsertNewCall(insertPanelCall);
@@ -185,18 +175,17 @@ function evaluateNewChannel(evt){
 	}
 };
 
-//***************************************************************************************************
-//---------------------------------------------------------------------------------------------------
 // Funcion Callback de error cuando falla el bind.Environment Fiber
 function evaluateNewChannelErr(err){
 	console.log('FALLO TO BIND ENVIRONMENT EN evaluateNewChannel', err);
 };
 
 //***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
 
 
 
-
+//***************************************************************************************************
 //---------------------------------------------------------------------------------------------------
 // Funcion para Evaluar las Llamadas Colgadas desde ami.on
 function evaluateHangupChannel(evt){
@@ -236,7 +225,7 @@ function evaluateHangupChannel(evt){
 		Meteor.call('panelCallsUpdateState', asteriskUniqueId, newState);
 
 		// Retrasamos el Remove del Documento en el panel calls.
-		Meteor.setTimeout(function(){removePanelCallHangup(asteriskUniqueId);}, 3000);
+		Meteor.setTimeout(function(){removePanelCallHangup(asteriskUniqueId);}, 2000);
 	}
 
 	else {
@@ -244,13 +233,13 @@ function evaluateHangupChannel(evt){
 	}
 };
 
-
-
 // Funcion Callback de error cuando falla el bind.Environment Fiber
 function evaluateHangupChannelErr(err){
 	console.log('FALLO TO BIND ENVIRONMENT', err);
 };
 
+//***************************************************************************************************
+//---------------------------------------------------------------------------------------------------
 
 
 
@@ -262,10 +251,10 @@ function isReCall (siptaxiCallLast){
 		return null;
 	}
 	var now = new Date().getTime();
-	var diff = (now - siptaxiCallLast)/1000;
+	var diff = (now - siptaxiCallLast)/1000; 
 	console.log('---> La Diferencia en Tiempo con la Utima Llamada es = ', diff, ' sg <---');
 
-	if (diff < 60){
+	if (diff < 600){ // Tiempo para establecer rellamada ( 10 min Aprox )
 		console.log('---> Por Tanto es una RELLAMADA <---\n');
 		return true;
 	}
@@ -360,7 +349,7 @@ function serviceCount (asteriskPhone){
 
 
 //---------------------------------------------------------------------------------------------------
-// Funcion Para Trar los ultimos 2 Servicios
+// Funcion Para Trer los ultimos 2 Servicios
 function servicesLast(asteriskPhone){
 	var data = null;
 	Meteor.call('servicesLast', asteriskPhone, function (error, result) {
@@ -405,6 +394,7 @@ function removePanelCallHangup (asteriskUniqueId){
 		//console.log('---> Documento en PANELCALLS BORRADO OK <---');
 	});
 
+};
 
-//Meteor.call('panelCallsHangup', asteriskUniqueId);
-}
+//---------------------------------------------------------------------------------------------------
+//***************************************************************************************************

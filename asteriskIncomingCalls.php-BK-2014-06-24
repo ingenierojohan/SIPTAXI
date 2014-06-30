@@ -1,0 +1,59 @@
+#!/usr/bin/php -q
+<?php
+
+require('phpagi/phpagi.php');		// Libreria AGI PHP
+
+// ------------------------------------ Conexion a DB SIPTAXI ------------------------------------------------------
+$mongo = new Mongo();	// Instanciamos el Objeto
+$db = $mongo->selectDB("SIPTAXI");	// Seleccion de db
+$db->authenticate('SIPTAXI-admin', 'siptelco.08');	// Autenticacion (user/passwd)
+$c_asteriskCalls = $mongo->selectCollection($db,"asteriskCalls");	// Seleccion de la Coleccion
+//-----------------------------------------------------------------------------------------------------------------
+
+// I/O PHP
+$stdin = fopen('php://stdin', 'r'); 
+$stdout = fopen('php://stdout','w'); 
+$stdlog = fopen('agi.log', 'w');
+error_reporting(E_ALL);
+//------------------------------------------------
+
+//-----------  Variables enviadas por Asterisk
+$agi = new AGI();
+$unique=$agi->request['agi_uniqueid'];
+$cid=$agi->request['agi_callerid'];
+$linea="L".$argv[1];
+//------------------------------------------------
+
+//------  FORMATO DOCUMENTO
+//	_id : ObjectId	--->	Id unico en formato ObjectId 			(astetisk)
+//	cid : "string"	--->	Numero Telefonico en el callerIdNum del Asterisk 	(asterisk)
+//	timestampIncoming	: "int32"---> huella de tiempo del ingreso de la Llamada 	(asterisk)
+//	timestampHangup	: "int32" --->	Huella de tiempo del Colgado de la llamada 	(asterisk o siptaxi)
+
+// status : "string"
+//		0 = Nueva llamada (Write Asterisk)
+//		1 = Llamada recibida por la app SIPTAXI (write Meteor)
+//		2 = Llamada Finalizada por la app SIPTAXI (write Meteor)
+//		3 = Llamada Finalizada por Asterisk (write Asterisk)
+
+
+$status='0';
+$fecha = new DateTime();
+$timestampIncoming = $fecha->getTimestamp();
+$timestampHangup = "";
+
+// Array Con Valores a Insertar
+$newIncomingCall = array("timestampIncoming"=>$timestampIncoming ,"uniqueId"=>$unique, "cid"=>$cid, "status"=>$status, "timestampHangup"=>$timestampHangup);
+
+// Metodo para insert a coleccion
+$c_asteriskCalls->insert($newIncomingCall);
+
+
+$agi->noop("---- LLAMADA INGRESADA -----> ".$cid." ---- ");
+$agi->noop("---- PAUSA 3 sg  -----");
+sleep(2);
+$agi->noop("--- LANZADO AL GRUPO 600 ---");
+$agi->set_variable("callerid", $linea."-".$cid);
+
+exit(0);
+?>

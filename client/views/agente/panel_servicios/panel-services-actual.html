@@ -6,18 +6,19 @@
 			<!-- BEGIN -->
 			<thead>
 			<tr>
-			<th>ESTADO</th>
-			<th>H-LLAM</th>
-			<th>H-ASIG</th>
-			<th>TELEFONO</th>
-			<th>NOMBRE</th>
-			<th>DIRECCION</th>
-			<th>REFERENCIA</th>
-			<th>NOTAS CLIENTE</th>
-			<th>COD</th>
-			<th>NOTAS SERVICIO</th>
-			<th>MOVIL</th>
-			<th>ACCIONES</th>
+				<th>AGENTE</th>
+				<th>ESTADO</th>
+				<th>H-LLAM</th>
+				<th>H-ASIG</th>
+				<th>TELEFONO</th>
+				<th>NOMBRE</th>
+				<th>DIRECCION</th>
+				<th>REFERENCIA</th>
+				<th>NOTAS CLIENTE</th>
+				<th>COD</th>
+				<th>NOTAS SERVICIO</th>
+				<th>MOVIL</th>
+				<th>ACCIONES</th>
 			</tr>
 			</thead>
 			<!-- END -->
@@ -26,7 +27,7 @@
 			<!-- BEGIN -->
 			<tbody>
 			{{# each servicesActual}}
-				{{>servicesActualRow}}
+				{{> servicesActualRow}}
 			{{/each}}
 			</tbody>
 			<!-- ################### END tbody ###################  -->
@@ -41,6 +42,9 @@
 <template name = "servicesActualRow">
 	<tr class="{{serviceRowStatus.rowColor}}">
 
+		<!-- AGENTE -->
+		<td>{{agentName}}</td>
+
 		<!-- ESTADO  -->
 		<td><span class ="label {{serviceRowStatus.estadoColor}} services-estado">{{serviceRowStatus.estadoText}}</span></td>
 
@@ -54,26 +58,27 @@
 		<td><span class ="phone-service label {{serviceRowStatus.estadoColor}}">{{customerPhone}}</span></td>
 
 		<!-- NOMBRE-->
-		<td><input type="text" class="panel-services-inputs" value="{{customerName}}"/></td>
+		<td><input type="text" id="customerName-{{_id}}" class="typeaheadCustomerName panel-services-inputs" value="{{customerName}}"/></td>
 
 		<!-- DIRECCION -->
-		<td><input type="text" class="panel-services-inputs" value="{{customerAddress}}" /></td>
+		<td><input type="text" id="customerAddress-{{_id}}" class="panel-services-inputs" value="{{customerAddress}}" /></td>
 
 		<!-- REFERENCIA-->
-		<td><input type="text" class="panel-services-inputs" value="{{customerAddressReference}}"/></td>
+		<td><input type="text" id="customerAddressReference-{{_id}}" class="panel-services-inputs typeaheadCustomerAddressReference" value="{{customerAddressReference}}"/></td>
 
 		<!-- COMENTARIOS CLIENTE-->
-		<td><input type="text" class="panel-services-inputs" value="{{customerComments}}"/></td>
+		<td><input type="text" id="customerComments-{{_id}}" class="panel-services-inputs" value="{{customerComments}}"/><button class="btn btn-mini btn-success" id="btnSaveCustomer">G</button></td>
 
 		<!-- CODIGO TELEFONICO -->
 		<td><span class ="badge badge-default">{{customerCod}}</span></td>
 
 		<!-- COMENTARIOS SERVICIO-->
-		<td><input type="text" class="panel-services-inputs" value="{{comments}}"/></td>
+		<td><input type="text" id="serviceComments-{{_id}}" class="panel-services-inputs" value="{{comments}}"/></td>
 
+		<!-- MUESTRA SOLO EN PENDIENTES -->
 		{{#if btnPendiente}}
 			<!-- MOVIL y PLACA -->
-			<td> <input type="text" data-provide="typeahead" data-source= '[{{movilYplaca}}]' class="panel-services-inputs-movil" placeholder="Ingrese un Movil..."/></td>
+			<td> <input type="text" id="movil-{{_id}}" data-provide="typeahead" data-source= '[{{movilYplaca}}]' class="panel-services-inputs-movil" placeholder="Ingrese un Movil..."/></td>
 
 			<!-- Botones de ACCIONES -->
 			<td>
@@ -86,10 +91,10 @@
 					</div>
 				</div>
 			</td>
-
+		<!-- MUESTRA ASIGANDO -->
 		{{else}}
 			<!-- MOVIL y PLACA -->
-			<td> <input type="text" data-provide="typeahead" value="{{taxiMovil}} -- {{taxiPlaca}}" data-source= '[{{movilYplaca}}]' class="panel-services-inputs-movil" placeholder="Ingrese un Movil..."/></td>
+			<td><span id="movil-{{_id}}" class ="phone-service label {{serviceRowStatus.estadoColor}}">{{taxiMovil}} -- {{taxiPlaca}}</span></td>
 
 			<!-- Botones de ACCIONES -->
 			<td>
@@ -107,4 +112,50 @@
 			</td>
 		{{/if}}
 	</tr>
+
+<!-- MODAL REASIGNAR MOVIL -->
+<div id="RAModal-{{_id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel" class="text-center alert alert-info">RE-ASIGNAR MOVIL</h3>
+	</div>
+	<div class="modal-body">
+		
+		<!-- SELECCION MOVIL Y PLACA -->
+		<p>
+			<label>Ingrese El Nuevo Movil</label>
+			<input type="text" id="RAmodalMovil-{{_id}}" data-provide="typeahead" data-source= '[{{movilYplaca}}]' class="panel-services-inputs-movil" placeholder="Ingrese un Movil..."/>
+		</p>
+
+		<!-- REASIGNACION RAZON -->
+		<p>
+			<label>Ingrese el Motivo de la Nueva Asignación</label>
+			<input type="text" id="RAmodalReason-{{_id}}" class="input-xlarge" placeholder="Razon de la Re-asignación"/>
+		</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Cerrar</button>
+    <button id="btnRAModal-{{_id}}" class="btn btn-primary">Reasignar</button>
+  </div>
+</div>
+
+
+<!-- MODAL CANCELAR MOVIL -->
+<div id="CAModal-{{_id}}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel" class="text-center alert alert-error">CANCELACIÓN del SERVICIO</h3>
+	</div>
+	<div class="modal-body">
+		<!-- CANCELACION RAZON -->
+		<p>
+			<label>Ingrese el Motivo de la Cancelacion del Servicio</label>
+			<textarea  cols="30" rows="3" id="CAmodalReason-{{_id}}"></textarea>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<button id="btnCAModal-{{_id}}" class="btn btn-danger">CANCELAR SERVICIO</button>
+	</div>
+</div>
+
 </template>

@@ -10,7 +10,7 @@ Meteor.methods({
 
 	// Borramos el Registro de la coleccion PanelCalls cuando es state = 0 o cuando damos Click en BTN LANZAR
 	panelCallsHangup : function (uniqueId) {
-		//PanelCalls.remove({siptaxiCallAsteriskUniqueId : uniqueId});
+		PanelCalls.remove({siptaxiCallAsteriskUniqueId : uniqueId});
 		console.log('---> PANEL CALLS, Registro Borrado OK <---');
 	},
 

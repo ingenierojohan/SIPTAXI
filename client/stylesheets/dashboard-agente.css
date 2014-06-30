@@ -24,15 +24,17 @@
 }
 
 .social-box .body .panel-ingreso{
-	height: 300px;
+	height: 380px;
   overflow-y: auto;
 }
+
+
 .social-box header{
 	padding: 0;
 }
 
-.social-box .body .panel-despacho{
-	height:100%;
+.social-box .body .panel-servicios{
+	height:470px;
   overflow-y: auto;
 }
 /* Css PAra las Tables de Panel Ingreso*/

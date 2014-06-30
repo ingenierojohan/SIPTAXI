@@ -1,0 +1,31 @@
+;### INGRESO AGI SIPTAXI  ###
+[SIPTAXI-INCOMING-CALLS]
+;;;EN EL CLI se debe Inicializar la Bases de Datos (database put INGRESO CONTADOR 0) --- (database put (familia key value)
+exten => s,1,Noop(---->> CAPTURANDO EL CALLER ID ${CALLERID}<<----)
+exten => s,n,Set(CONTADOR=${DB(INGRESO/CONTADOR)})
+exten => s,n,Noop(---->> ASTERISK DB --- INGRESO/CONTADOR, POSICION ANTERIOR LLAMADA = ${CONTADOR} <<----)
+exten => s,n,GotoIf($[${ISNULL(${CONTADOR})}]?:continuar)
+exten => s,n,Set(DB(INGRESO/CONTADOR)=0)
+exten => s,n,Goto(1)
+exten => s,n(continuar),NoOp( ----> INCREMENTANDO CONTADOR DE LLAMADAS <---)
+exten => s,n,Set(CONTADOR=$[${CONTADOR} + 1])
+exten => s,n,Set(DB(INGRESO/CONTADOR)=${CONTADOR})
+exten => s,n,GotoIf($["${CONTADOR}" > "10"]?:menos)
+	same => n,Noop(---->> REINICIO CONTADOR <<----)
+	same => n,Set(DB(INGRESO/CONTADOR)=1)
+	same => n,Set(CONTADOR=${DB(INGRESO/CONTADOR)})
+	same => n,Noop(---->> --------------- POSICION ACTUAL DE LA LLAMADA DESPUES DE REINCIO: ${CONTADOR} ----------------- <<----)
+
+exten => s,n,Goto(LANZAR_AGI,s,1)
+exten => s,n(menos),Noop(---->> --------------- POSICION ACTUAL DE LA LLAMADA : ${CONTADOR} ----------------- <<----)
+exten => s,n,Goto(LANZAR_AGI,s,1)
+exten => h,1,Agi(SIPTAXI/asteriskHangupCalls.php,${CONTADOR})
+
+[LANZAR_AGI]
+exten => s,1,Noop(---->> LANZANDO EL AGI <<----)
+exten => s,n,Agi(SIPTAXI/asteriskIncomingCalls.php, ${CONTADOR})
+exten => s,n,Set(CALLERID(name)=${callerid})
+exten => s,n,Goto(ext-group,600,1)
+exten => h,1,Agi(SIPTAXI/asteriskHangupCalls.php,${CONTADOR})
+
+;--------------------------------------------------------------------------------------------------------------------------------

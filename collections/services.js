@@ -6,23 +6,25 @@ MAPA de la Coleccion
 ------------------------------------------------------------------------------------------
 _id : Id del documento
 
-customerId : Id del Cliente
-customerPhone : Telefono del Cliente
+agentId : Id del agente que despacho el Servicio
+agentName : Nombre del agente
+
+comments : Observaciones del Servicio
+
+customerAddressComments : Notas de la Direccion
 customerAddress : Direccion del Cliente
 customerAddressReference : Referencia de la Direccion
-customerAddressComments : Notas de la Direccion
-customerName : Nombre del Cliente
 customerCod : Codigo del Cliente
+customerId : Id del Cliente
+customerPhone : Telefono del Cliente
+customerName : Nombre del Cliente
 
-siptaxiCallId : id de la Llamada
 siptaxiCallasteriskUniqueId : Id de la Llamada en asterisk
+siptaxiCallId : id de la Llamada
 
 taxiId : id del Taxi
 taxiMovil : Numero del Movil del taxi
 taxiPlaca : Placa del Taxi
-
-agentId : Id del agente que despacho el Servicio
-agentName : Nombre del agente
 
 timeLaunch : Hora en que fue Lazado del Servicio (presionado el Boton Lanzar)
 timeAllocate : Hora en que Fue Asignado el Servicio
@@ -30,7 +32,7 @@ timePickup : Hora en que Fue recogido el Servicio
 timeCancel : Hora en que Fue Cancelado el Servicio
 timeReallocate : Hora en que Fue ReAsignado el Servicio
 
-comments : Observaciones del Servicio
+
 
 status : 
 	0 = servicio Lanzado

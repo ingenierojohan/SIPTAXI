@@ -37,10 +37,28 @@ Meteor.methods({
 		});
 	},
 
+	// Actualizar Datos Usuario buscando Su Telefono.
+	customerUpdateByPhone : function (phone, data) {
+		console.log('\n\n---> ACTUALIZANDO UN CUSTOMER x SU TELEFONO <---');
+		Customers.update({phone:phone },{$set: data}, function(err, result){
+			if (err){
+				console.log('ERROR AL HACER UPDATE en customers', err);
+				return;
+			}
+			if (result === 1) {
+				console.log ('---> CUSTOMERS UPDATE = ', result, ' ---> CAMBIO EXITOSO <---');
+				return result;
+			}
+			else{
+				console.log ('---> CUSTOMERS UPDATE = ', result, ' ---> UPssss, NO SE REALIZO EL CAMBIO <---');
+				return;
+			}
+		});
+	},
+
 	//Crear Nuevo Documentos del Usuario
 	customerInsert : function (data) {
 		var now = new Date().getTime();
-		//var createdAt = moment(now).format("dddd, MMMM DD YYYY, HH:mm:ss");
 		var newCustomer = {
 			address : data.address,
 			addressReference : data.addressReference,
@@ -49,8 +67,9 @@ Meteor.methods({
 			phone : data.phone,
 			cod : data.cod,
 			createdAt : now
-		}
+		};
 		var insertCustomer = Customers.insert(newCustomer);
+		
 		console.log('\n---> NUEVO DOCUMENTO EN CUSTOMERS ... ID = ', insertCustomer, '<---\n');
 		return insertCustomer;
 	}

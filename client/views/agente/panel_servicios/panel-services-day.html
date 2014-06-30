@@ -1,3 +1,72 @@
 <template name='panelServicesDay'>
 
+	<div class="panel-services-actual">
+		<!-- BEGIN TABLE DATA -->
+		<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-condensed">
+			<!-- BEGIN -->
+			<thead>
+				<tr>
+					<th>AGENTE</th>
+					<th>ESTADO</th>
+					<th>H-ASIG</th>
+					<th>H-FINAL</th>
+					<th></th>
+					<th>TELEFONO</th>
+					<th>NOMBRE</th>
+					<th>DIRECCION</th>
+					<th>REFERENCIA</th>
+					<th>NOTAS CLIENTE</th>
+					<th>COD</th>
+					<th></th>
+					<th>MOVIL</th>
+					<th>PLACA</th>
+					<th>NOTAS SERVICIO</th>
+				</tr>
+			</thead>
+			<!-- END -->
+		
+			<!-- ################### TBODY ###################  -->
+			<!-- BEGIN -->
+			<tbody>
+			{{#each servicesDay}}
+				<tr class="{{serviceRowStatus.rowColor}}">
+					<td>{{agentName}}</td>
+					<!-- ESTADO  -->
+					<td><span class ="label {{serviceRowStatus.estadoColor}} services-estado">{{serviceRowStatus.estadoText}}</span></td>
+					
+					<!-- Hora ASIGNACION  o REASIGANCION -->
+					<td class="services-estado"><strong>{{serviceRowStatus.timeAllocate}}</strong></td>
+
+					<!-- Hora FINALIZACION o Cancelacion o Reasigancion -->
+					<td class="services-estado"><strong>{{serviceRowStatus.timeFinal}}</strong></td>
+					
+					<td></td>
+
+					<!-- TELEFONO  -->
+					<td><span class ="phone-service label {{serviceRowStatus.estadoColor}}">{{customerPhone}}</span></td>
+					
+					<!-- NOMBRE-->
+					<td>{{customerName}}</td>
+					<!-- DIRECCION -->
+					<td>{{customerAddress}}</td>
+					<!-- REFERENCIA -->
+					<td>{{customerAddressReference}}</td>
+					<!-- NOTAS CLIENTE -->
+					<td>{{customerComments}}</td>
+					<!-- CODIGO -->
+					<td><span class ="badge badge-default">{{customerCod}}</span></td>
+					<td></td>
+					<td><strong>{{taxiMovil}}</strong></td>
+					<td><strong>{{taxiPlaca}}</strong></td>
+					<td>{{comments}}</td>
+
+				</tr>
+			{{/each}}
+			</tbody>
+			<!-- ################### END tbody ###################  -->
+
+		</table>
+		<!-- END TABLE DATA -->
+	</div>
+
 </template>

@@ -1,0 +1,43 @@
+[macro-hangupcall]
+exten => s,1,Noop(---->> COLGANDO LA LLAMADA <<----)
+exten => s,n(start),GotoIf($["${USE_CONFIRMATION}"="" | "${RINGGROUP_INDEX}"="" | "${CHANNEL}"!="${UNIQCHAN}"]?theend)
+exten => s,n(delrgi),Noop(Deleting: RG/${RINGGROUP_INDEX}/${CHANNEL} ${DB_DELETE(RG/${RINGGROUP_INDEX}/${CHANNEL})})
+exten => s,n(theend),ExecIf($["${ONETOUCH_RECFILE}"!="" & "${CDR(recordingfile)}"=""]?Set(CDR(recordingfile)=${ONETOUCH_RECFILE}))
+exten => s,n,Agi(SIPTAXI/asteriskHangupCalls.php)
+exten => s,n,Hangup
+exten => s,n,MacroExit()
+;--== end of [macro-hangupcall] ==--;
+
+
+[app-blackhole]
+exten => hangup,1,Noop(Blackhole Dest: Hangup)
+exten => hangup,2,Agi(SIPTAXI/asteriskHangupCalls.php,${CONTADOR})
+exten => hangup,n,Hangup
+
+exten => zapateller,1,Noop(Blackhole Dest: Play SIT Tone)
+exten => zapateller,n,Answer
+exten => zapateller,n,Zapateller()
+
+exten => musiconhold,1,Noop(Blackhole Dest: Put caller on hold forever)
+exten => musiconhold,n,Answer
+exten => musiconhold,n,MusicOnHold()
+
+exten => congestion,1,Noop(Blackhole Dest: Congestion)
+exten => congestion,n,Playtones(congestion)
+exten => congestion,n,Congestion(20)
+exten => congestion,n,Agi(SIPTAXI/asteriskHangupCalls.php,${CONTADOR})
+exten => congestion,n,Hangup
+
+exten => busy,1,Noop(Blackhole Dest: Busy)
+exten => busy,n,Busy(20)
+exten => busy,n,Agi(SIPTAXI/asteriskHangupCalls.php,${CONTADOR})
+exten => busy,n,Hangup
+
+exten => ring,1,Noop(Blackhole Dest: Ring)
+exten => ring,n,Answer
+exten => ring,n,Playtones(ring)
+exten => ring,n,Wait(300)
+exten => ring,n,Agi(SIPTAXI/asteriskHangupCalls.php,${CONTADOR})
+exten => ring,n,Hangup
+
+;--== end of [app-blackhole] ==--;

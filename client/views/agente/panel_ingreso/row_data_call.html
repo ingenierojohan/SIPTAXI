@@ -1,15 +1,15 @@
 
 <!-- *************************  TEMPLATE FILA ************************* -->
 <template name = "rowDataCall">
-
-{{#if isNewCustomer}}
-	{{> templateNewCustomer stateCalls}}
-{{else}}
-	{{> templateCustomer stateCalls}}
-{{/if}}
-
+	{{#if isNewCustomer}}
+		{{> templateNewCustomer stateCalls}}
+	{{else}}
+		{{> templateCustomer stateCalls}}
+	{{/if}}
 </template>
 <!-- ##################################################################################### -->
+
+
 
 <!-- *************************  TEMPLATE PARA CLIENTES NUEVOS ************************* -->
 <template name = 'templateNewCustomer'>
@@ -28,13 +28,13 @@
 		<td><span class ="phone label label-important">{{siptaxiCallPhone}}</span></td>
 
 		<!-- Info Name Customer y Busqueda-->
-		<td><input type="text" class="inputCustomersNames" value="" placeholder ="Nombre del Usuario" id="customerName-{{_id}}"/></td>
+		<td><input type="text" class="inputCustomersNames typeaheadCustomerName" value="" placeholder ="Nombre del Usuario" id="customerName-{{_id}}"/></td>
 
 		<!-- Info de la Direccion -->
-		<td><input type="text" class="inputCustomersAddress" value="" placeholder = "CRA 00 # 00-00" id="customerAddress-{{_id}}"/></td>
+		<td><input type="text" class="inputCustomersAddress" value="" placeholder = "CRA 00 # 00-00" id="customerAddress-{{_id}}" autofocus="autofocus"/></td>
 
 		<!-- Campo de Referencia y Busqueda-->
-		<td><input type="text" class="inputCustomersAddressReferences" value="" placeholder="Barrio-Sector-Referencia" id="customerAddressReference-{{_id}}"/></td>
+		<td><input type="text" class="inputCustomersAddressReferences typeaheadCustomerAddressReference" value="" placeholder="Barrio-Sector-Referencia" id="customerAddressReference-{{_id}}"/></td>
 
 		<!-- Field Comentarios del Cliente -->
 		<td><input type="text" class="inputCustomersComments" value="" placeholder="Notas del Usuario" id="customerComments-{{_id}}"/></td>
@@ -68,14 +68,14 @@
 			<!-- Info Telefono  -->
 			<td class = "td-phone"><span class ="phone label label-{{rowColor}}">{{siptaxiCallPhone}}</span></td>
 
-			<!-- Info Name Customer y Busqueda-->
-			<td><input type="text" class="inputCustomersNames" value="{{customerName}}" id="customerName-{{_id}}"/></td>
+			<!-- Info Name Customer-->
+			<td><input type="text" class="inputCustomersNames typeaheadCustomerName" value="{{customerName}}" id="customerName-{{_id}}"/></td>
 			
 			<!-- Info de la Direccion -->
 			<td><input type="text" class="inputCustomersAddress" value="{{customerAddress}}" id="customerAddress-{{_id}}"/></td>
 
 			<!-- Campo de Referencia y Busqueda-->
-			<td><input type="text" class="inputCustomersAddressReferences" value="{{customerAddressReference}}" id="customerAddressReference-{{_id}}"/></td>
+			<td><input type="text" class="inputCustomersAddressReferences typeaheadCustomerAddressReference" value="{{customerAddressReference}}" id="customerAddressReference-{{_id}}"/></td>
 			
 			<!-- Field Comentarios del Cliente -->
 			<td> <input type="text" class="inputCustomersComments" value="{{customerComments}}" id="customerComments-{{_id}}"/> </td>
